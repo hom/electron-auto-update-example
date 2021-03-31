@@ -95,6 +95,7 @@ autoUpdater.on('download-progress', () => {
   win.webContents.send('updater', 'download-progress')
 })
 autoUpdater.on('update-downloaded', () => {
+  autoUpdater.quitAndInstall()
   log.info('update-downloaded');
   win.webContents.send('updater', 'update-downloaded')
 })
