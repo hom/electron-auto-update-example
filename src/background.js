@@ -36,8 +36,7 @@ async function createWindow() {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
-    autoUpdater.autoDownload = false
-    autoUpdater.checkForUpdates()
+    autoUpdater.checkForUpdatesAndNotify()
   }
 }
 
@@ -98,10 +97,6 @@ autoUpdater.on('update-downloaded', () => {
   autoUpdater.quitAndInstall()
   log.info('update-downloaded');
   win.webContents.send('updater', 'update-downloaded')
-})
-
-win.webContents.on('upgrade', () => {
-  autoUpdater.downloadUpdate()
 })
 
 // Exit cleanly on request from parent process in development mode.
