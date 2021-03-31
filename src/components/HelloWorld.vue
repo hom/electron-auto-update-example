@@ -2,7 +2,7 @@
   <div class='hello'>
     <h1>{{ msg }}</h1>
     <p>Updates State: {{ state }}</p>
-    <p>v0.1.16</p>
+    <p>v0.1.17</p>
     <button @click="onUpgrade">更新</button>
   </div>
 </template>

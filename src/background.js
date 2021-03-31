@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcRenderer } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
@@ -100,7 +100,7 @@ autoUpdater.on('update-downloaded', () => {
   win.webContents.send('updater', 'update-downloaded')
 })
 
-ipcRenderer.on('upgrade', () => {
+ipcMain.on('upgrade', () => {
   autoUpdater.downloadUpdate()
 })
 
