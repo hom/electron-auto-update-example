@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcRenderer } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
@@ -36,7 +36,8 @@ async function createWindow() {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.autoDownload = false
+    autoUpdater.checkForUpdates()
   }
 }
 
@@ -89,14 +90,18 @@ autoUpdater.on('error', () => {
   log.info('error');
   win.webContents.send('updater', 'error')
 })
-autoUpdater.on('download-progress', () => {
+autoUpdater.on('download-progress', (progress) => {
   log.info('download-progress');
-  win.webContents.send('updater', 'download-progress')
+  win.webContents.send('progress', progress)
 })
 autoUpdater.on('update-downloaded', () => {
   autoUpdater.quitAndInstall()
   log.info('update-downloaded');
   win.webContents.send('updater', 'update-downloaded')
+})
+
+ipcRenderer.on('upgrade', () => {
+  autoUpdater.downloadUpdate()
 })
 
 // Exit cleanly on request from parent process in development mode.
