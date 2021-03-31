@@ -2,6 +2,7 @@
   <div class='hello'>
     <h1>{{ msg }}</h1>
     <p>Updates State: {{ state }}</p>
+    <button @click="onUpgrade">更新</button>
   </div>
 </template>
 <script>
@@ -14,6 +15,11 @@ export default {
   },
   props: {
     msg: String,
+  },
+  methods: {
+    onUpgrade() {
+      window.ipcRenderer.send('upgrade')
+    }
   },
   mounted() {
     window.ipcRenderer.on('updater', (event, message) => {

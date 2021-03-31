@@ -99,6 +99,10 @@ autoUpdater.on('update-downloaded', () => {
   win.webContents.send('updater', 'update-downloaded')
 })
 
+win.webContents.on('upgrade', () => {
+  autoUpdater.downloadUpdate()
+})
+
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
