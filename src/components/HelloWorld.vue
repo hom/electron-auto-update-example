@@ -2,6 +2,7 @@
   <div class='hello'>
     <h1>{{ msg }}</h1>
     <p>Updates State: {{ state }}</p>
+    <p>v0.1.15</p>
   </div>
 </template>
 <script>
