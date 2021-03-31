@@ -29,6 +29,7 @@ export default {
         default:
           console.log(message)
           this.state = message
+          break
       }
     });
   },
