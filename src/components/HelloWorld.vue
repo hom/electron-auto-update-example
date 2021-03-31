@@ -26,6 +26,9 @@ export default {
           console.log('update_not_available')
           this.state = 'Not Available';
           break;
+        default:
+          console.log(message)
+          this.state = message
       }
     });
   },

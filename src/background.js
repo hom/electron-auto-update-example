@@ -32,10 +32,6 @@ async function createWindow() {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
-    autoUpdater.updateConfigPath = path.join(
-      __dirname,
-      "../dev-app-update.yml" // change path if needed
-    );
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -86,6 +82,22 @@ autoUpdater.on('update-not-available', () => {
   log.info('update_not_available');
   win.webContents.send('updater', 'update_not_available');
 });
+autoUpdater.on('checking-for-update', () => {
+  log.info('checking-for-update');
+  win.webContents.send('updater', 'checking-for-update')
+})
+autoUpdater.on('error', () => {
+  log.info('error');
+  win.webContents.send('updater', 'error')
+})
+autoUpdater.on('download-progress', () => {
+  log.info('download-progress');
+  win.webContents.send('updater', 'download-progress')
+})
+autoUpdater.on('update-downloaded', () => {
+  log.info('update-downloaded');
+  win.webContents.send('updater', 'update-downloaded')
+})
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
