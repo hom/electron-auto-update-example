@@ -4,6 +4,8 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+const log = require('electron-log');
+const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -11,16 +13,18 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
+let win
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      preload: path.join(__dirname, 'preload.js'),
     }
   })
 
@@ -28,11 +32,16 @@ async function createWindow() {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
+    autoUpdater.updateConfigPath = path.join(
+      __dirname,
+      "../dev-app-update.yml" // change path if needed
+    );
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.autoDownload = false
+    autoUpdater.checkForUpdates()
   }
 }
 
@@ -65,6 +74,18 @@ app.on('ready', async () => {
   }
   createWindow()
 })
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+
+autoUpdater.on('update-available', () => {
+  log.info('update_available');
+  win.webContents.send('updater', 'update_available');
+});
+autoUpdater.on('update-not-available', () => {
+  log.info('update_not_available');
+  win.webContents.send('updater', 'update_not_available');
+});
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

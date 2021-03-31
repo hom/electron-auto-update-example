@@ -1,6 +1,6 @@
 {
   "name": "electron-auto-update-example",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "ruxf",
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.6.5",
+    "electron-log": "^4.3.2",
     "electron-updater": "^4.3.8",
     "vue": "^2.6.11"
   },
